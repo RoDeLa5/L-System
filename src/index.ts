@@ -1,5 +1,5 @@
 import "./styles.css";
-import { Turtle } from "./turtle";
+import { LSystem } from "./lsystem";
 import * as THREE from "three";
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls";
 
@@ -28,12 +28,50 @@ const divisions = 10;
 const gridHelper = new THREE.GridHelper(size, divisions);
 scene.add(gridHelper);
 
-const turtle = new Turtle();
-
-renderer.render(scene, camera);
-
 function animate() {
   requestAnimationFrame(animate);
   renderer.render(scene, camera);
 }
 animate();
+
+const binaryTree = new LSystem(
+  {
+    "0": "move 1",
+    "1": "move 1",
+    "[": "saveState; turnLeft 45",
+    "]": "restoreState; turnRight 45",
+  },
+  {
+    "0": "1[0]0".split(""),
+    "1": "11".split(""),
+  },
+  ["0"]
+);
+
+const fractalPlant = new LSystem(
+  {
+    X: "",
+    F: "move 1",
+    "[": "saveState",
+    "]": "restoreState",
+    "+": "turnRight 25",
+    "-": "turnLeft 25",
+  },
+  {
+    X: "F+[[X]-X]-F[-FX]+X".split(""),
+    F: "FF".split(""),
+  },
+  ["X"]
+);
+
+function update(lsystem: LSystem) {
+  lsystem.grow();
+  lsystem.render();
+  lsystem.log();
+}
+
+window.addEventListener("keyup", (e) => {
+  if (e.key == " ") {
+    update(fractalPlant);
+  }
+});
