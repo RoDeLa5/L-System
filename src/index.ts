@@ -52,14 +52,16 @@ const fractalPlant = new LSystem(
   {
     X: "",
     F: "move 1",
+    S: "color 0x6B8E23; sphere",
     "[": "saveState",
     "]": "restoreState",
     "+": "turnRight 25",
     "-": "turnLeft 25",
   },
   {
-    X: "F+[[X]-X]-F[-FX]+X".split(""),
+    X: "F+[[X]-X]-F[-F[S]X]+X".split(""),
     F: "FF".split(""),
+    S: [],
   },
   ["X"]
 );
@@ -67,7 +69,7 @@ const fractalPlant = new LSystem(
 function update(lsystem: LSystem) {
   lsystem.grow();
   lsystem.render();
-  lsystem.log();
+  // lsystem.log();
 }
 
 window.addEventListener("keyup", (e) => {
