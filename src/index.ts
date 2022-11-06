@@ -1,36 +1,39 @@
-import "./styles.css"
-import * as THREE from 'three';
-import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls';
+import "./styles.css";
+import { Turtle } from "./turtle";
+import * as THREE from "three";
+import { OrbitControls } from "three/examples/jsm/controls/OrbitControls";
+
+export { scene };
 
 const renderer = new THREE.WebGLRenderer();
-renderer.setSize( window.innerWidth, window.innerHeight );
-document.body.appendChild( renderer.domElement );
+renderer.setSize(window.innerWidth, window.innerHeight);
+document.body.appendChild(renderer.domElement);
 
 const scene = new THREE.Scene();
 
-const camera = new THREE.PerspectiveCamera( 75, window.innerWidth / window.innerHeight, 1, 500 );
-camera.position.set( 0, 0, 100 );
-camera.lookAt( 0, 0, 0 );
+const camera = new THREE.PerspectiveCamera(
+  75,
+  window.innerWidth / window.innerHeight,
+  1,
+  500
+);
+camera.position.set(0, 100, 100);
+camera.lookAt(0, 0, 0);
 
-const controls = new OrbitControls( camera, renderer.domElement );
+const controls = new OrbitControls(camera, renderer.domElement);
 
-const material = new THREE.LineBasicMaterial( { color: 0xffffff } );
+const size = 100;
+const divisions = 10;
 
-const points = [];
-points.push( new THREE.Vector3( - 10, 0, 0 ) );
-points.push( new THREE.Vector3( 0, 10, 0 ) );
-points.push( new THREE.Vector3( 10, 0, 0 ) );
+const gridHelper = new THREE.GridHelper(size, divisions);
+scene.add(gridHelper);
 
-const geometry = new THREE.BufferGeometry().setFromPoints( points );
+const turtle = new Turtle();
 
-const line = new THREE.Line( geometry, material );
-
-scene.add( line );
-renderer.render( scene, camera );
-
+renderer.render(scene, camera);
 
 function animate() {
-	requestAnimationFrame( animate );
-	renderer.render( scene, camera );
+  requestAnimationFrame(animate);
+  renderer.render(scene, camera);
 }
 animate();
