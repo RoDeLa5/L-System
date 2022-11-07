@@ -19,11 +19,14 @@ class LSystem {
   private drawingRule: DrawingRule;
   private prodRule: ProdRule;
   private state: string[];
+  private _age: number;
+  private maxAge: number;
 
   constructor(
     drawingRuleString: DrawingRuleString,
     prodRule: ProdRule,
-    axiom: string[]
+    axiom: string[],
+    maxAge: number = Infinity
   ) {
     this.turtle = new Turtle();
     this.drawingRule = {};
@@ -33,6 +36,12 @@ class LSystem {
 
     this.prodRule = prodRule;
     this.state = axiom;
+    this._age = 0;
+    this.maxAge = maxAge;
+  }
+
+  public get age(): number {
+    return this._age;
   }
 
   /**
@@ -49,6 +58,11 @@ class LSystem {
    * Grow
    */
   public grow() {
+    if (this._age >= this.maxAge) {
+      return false;
+    }
+    this._age += 1;
+
     const newState: string[] = [];
     this.state.forEach((symbol) => {
       if (symbol in this.prodRule) {
@@ -58,6 +72,7 @@ class LSystem {
       }
     });
     this.state = newState;
+    return true;
   }
 
   public log() {

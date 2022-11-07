@@ -63,7 +63,8 @@ const fractalPlant = new LSystem(
     F: "FF".split(""),
     S: [],
   },
-  ["X"]
+  ["X"],
+  6
 );
 
 function update(lsystem: LSystem) {
