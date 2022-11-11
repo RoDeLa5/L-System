@@ -1,9 +1,15 @@
 import "./styles.css";
 import { LSystem } from "./lsystem";
+import { init } from "./control";
 import * as THREE from "three";
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls";
 
 export { scene };
+
+init();
+
+const controlElm = document.getElementById("control");
+let controlIsOn = false;
 
 const renderer = new THREE.WebGLRenderer();
 renderer.setSize(window.innerWidth, window.innerHeight);
@@ -19,6 +25,14 @@ const camera = new THREE.PerspectiveCamera(
 );
 camera.position.set(0, 100, 100);
 camera.lookAt(0, 0, 0);
+
+function onResize() {
+  renderer.setSize(window.innerWidth, window.innerHeight);
+  camera.aspect = window.innerWidth / window.innerHeight;
+  camera.updateProjectionMatrix();
+}
+
+window.addEventListener("resize", onResize);
 
 const controls = new OrbitControls(camera, renderer.domElement);
 
@@ -74,7 +88,24 @@ function update(lsystem: LSystem) {
 }
 
 window.addEventListener("keyup", (e) => {
-  if (e.key == " ") {
-    update(fractalPlant);
+  switch (e.key) {
+    case " ":
+      if (!controlIsOn) {
+        update(fractalPlant);
+      }
+      break;
+    case "Escape":
+      toggleControl();
+      break;
   }
 });
+
+function toggleControl() {
+  if (controlIsOn) {
+    controlElm.style.display = "none";
+    controlIsOn = false;
+  } else {
+    controlElm.style.display = "block";
+    controlIsOn = true;
+  }
+}
