@@ -18,8 +18,9 @@ body {
 
   text-align: center;
   padding-top: 10vh;
+  box-sizing: border-box;
 
-  overflow-y: scroll;
+  overflow-y: auto;
 }
 
 #new-symbol > * {
