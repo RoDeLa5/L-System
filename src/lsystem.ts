@@ -37,7 +37,9 @@ class LSystem {
     this.prodRule = prodRule;
     this.state = axiom;
     this._age = 0;
-    this.maxAge = maxAge;
+    if (maxAge) {
+      this.maxAge = maxAge;
+    }
   }
 
   public get age(): number {

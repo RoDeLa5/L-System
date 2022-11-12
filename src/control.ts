@@ -2,11 +2,11 @@ import { LSystem, DrawingRule, ProdRule } from "./lsystem";
 
 export { init, lsystem };
 
-let axiom: string;
+let symbols: string[] = [];
 let drawingRule: DrawingRule;
 let prodRule: ProdRule;
-let symbols: string[] = [];
-
+let axiom: string;
+let maxAge: number;
 let lsystem: LSystem;
 
 const axiomInputElm = document.getElementById(
@@ -42,6 +42,8 @@ function init() {
         symbols: symbols,
         drawingRule: drawingRule,
         prodRule: prodRule,
+        axiom: axiom,
+        maxAge: maxAge,
       })
     );
   });
@@ -88,6 +90,14 @@ function save() {
     return;
   }
 
+  // Set max age
+  maxAge = parseInt(
+    (document.getElementById("max-age-input") as HTMLInputElement).value
+  );
+  if (maxAge == NaN) {
+    maxAge = Infinity;
+  }
+
   // Set drawing rule
   Array.from(symbolListElm.children).forEach((symbolElm) => {
     const _symbol = (
@@ -126,6 +136,6 @@ function save() {
         prodRule[_symbol][1].push(parseInt(prodWeight));
       });
     }
-    lsystem = new LSystem(drawingRule, prodRule, axiom);
+    lsystem = new LSystem(drawingRule, prodRule, axiom, maxAge);
   });
 }

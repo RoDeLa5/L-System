@@ -35,11 +35,15 @@ ul {
   padding: 0;
 }
 
-.symbol-name {
+.flow-root {
+  display: flow-root;
+}
+
+.left {
   float: left;
 }
 
-.remove-btn {
+.right {
   float: right;
 }
 

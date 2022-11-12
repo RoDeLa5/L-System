@@ -7,7 +7,14 @@
   <body>
     <div id="control-container">
       <div id="control">
-        <div>공리: <input type="text" id="axiom-input" /></div>
+        <div class="flow-root">
+          <span class="left">공리: </span
+          ><input type="text" id="axiom-input" class="right" />
+        </div>
+        <div class="flow-root">
+          <span class="left">최대 성장 단계: </span
+          ><input type="number" id="max-age-input" class="right" />
+        </div>
         <br />
         <div id="new-symbol">
           <input type="text" id="new-symbol-input" size="1" maxlength="1" />
@@ -23,16 +30,19 @@
 
         <div id="template" style="display: none">
           <li class="symbol-item">
-            <div style="display: flow-root;">
+            <div class="flow-root">
               <input
                 type="text"
-                class="symbol-name"
+                class="symbol-name left"
                 size="1"
                 maxlength="1"
                 readonly
                 onclick="const e=this.parentElement.nextElementSibling; e.style.display=(e.style.display==='none'?'block':'none');"
               />
-              <button class="remove-btn" onclick="this.parentElement.parentElement.remove();">
+              <button
+                class="right"
+                onclick="this.parentElement.parentElement.remove();"
+              >
                 삭제
               </button>
             </div>
