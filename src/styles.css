@@ -3,30 +3,60 @@ body {
   overflow: hidden;
 }
 
-#control {
+#control-container {
   position: fixed; /* Sit on top of the page content */
   display: none; /* Hidden by default */
-  width: 100%; /* Full width (cover the whole page) */
-  height: 100%; /* Full height (cover the whole page) */
+  width: 100%;
+  height: 100%;
   top: 0;
   left: 0;
   right: 0;
   bottom: 0;
   background-color: rgba(0, 0, 0, 0.5); /* Black background with opacity */
   z-index: 2; /* Specify a stack order in case you're using a different order for other elements */
-  cursor: pointer; /* Add a pointer on hover */
+}
 
+#control {
+  width: 100%;
+  max-width: 25em;
+  height: 100%;
+  margin: 0 auto;
+
+  color: white;
   text-align: center;
-  padding-top: 10vh;
+  padding-top: 8vh;
   box-sizing: border-box;
 
   overflow-y: auto;
 }
 
-#new-symbol > * {
-  font-size: larger;
-}
-
 ul {
   list-style-type: none;
+  padding: 0;
+}
+
+.symbol-name {
+  float: left;
+}
+
+.remove-btn {
+  float: right;
+}
+
+textarea {
+  width: 100%;
+}
+
+li.prod-rule-item {
+  display: flex;
+}
+
+li.prod-rule-item > input:nth-child(1) {
+  flex-grow: 1;
+}
+
+li.prod-rule-item > input:nth-child(2) {
+  width: 3em;
+  margin-left: 0.2em;
+  margin-right: 1em;
 }

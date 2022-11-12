@@ -8,7 +8,7 @@ export { scene };
 
 init();
 
-const controlElm = document.getElementById("control");
+const controlContainerElm = document.getElementById("control-container");
 let controlIsOn = false;
 
 const renderer = new THREE.WebGLRenderer();
@@ -106,10 +106,10 @@ window.addEventListener("keyup", (e) => {
 
 function toggleControl() {
   if (controlIsOn) {
-    controlElm.style.display = "none";
+    controlContainerElm.style.display = "none";
     controlIsOn = false;
   } else {
-    controlElm.style.display = "block";
+    controlContainerElm.style.display = "block";
     controlIsOn = true;
   }
 }
