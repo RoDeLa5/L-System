@@ -1,31 +1,31 @@
 import { Turtle } from "./turtle";
 
-export { LSystem };
+export { LSystem, DrawingRule, ProdRule };
 
-interface DrawingRuleString {
+interface DrawingRule {
   [key: string]: string;
 }
 
-interface DrawingRule {
+interface DrawingRuleFunc {
   [key: string]: Function;
 }
 
 interface ProdRule {
-  [key: string]: string[];
+  [key: string]: [string[], number[]];
 }
 
 class LSystem {
   private turtle: Turtle;
-  private drawingRule: DrawingRule;
+  private drawingRule: DrawingRuleFunc;
   private prodRule: ProdRule;
-  private state: string[];
+  private state: string;
   private _age: number;
   private maxAge: number;
 
   constructor(
-    drawingRuleString: DrawingRuleString,
+    drawingRuleString: DrawingRule,
     prodRule: ProdRule,
-    axiom: string[],
+    axiom: string,
     maxAge: number = Infinity
   ) {
     this.turtle = new Turtle();
@@ -49,8 +49,10 @@ class LSystem {
    */
   public render() {
     this.turtle.reset();
-    this.state.forEach((symbol) => {
-      this.drawingRule[symbol](this.turtle);
+    Array.from(this.state).forEach((symbol) => {
+      if (typeof this.drawingRule[symbol] == "function") {
+        this.drawingRule[symbol](this.turtle);
+      }
     });
   }
 
@@ -63,12 +65,12 @@ class LSystem {
     }
     this._age += 1;
 
-    const newState: string[] = [];
-    this.state.forEach((symbol) => {
-      if (symbol in this.prodRule) {
-        newState.push(...this.prodRule[symbol]);
+    let newState = "";
+    Array.from(this.state).forEach((symbol) => {
+      if (this.prodRule[symbol] != undefined) {
+        newState += randomChoice(...this.prodRule[symbol]);
       } else {
-        newState.push(symbol);
+        newState += symbol;
       }
     });
     this.state = newState;
@@ -76,7 +78,7 @@ class LSystem {
   }
 
   public log() {
-    console.log(this.state.join(""));
+    console.log(this.state);
   }
 }
 
@@ -90,4 +92,19 @@ function parseCommand(commandStr: string) {
     }
   });
   return new Function("turtle", str);
+}
+
+function randomChoice(array: any[], weight: number[]) {
+  const partialSumArray: number[] = [];
+  let sum = 0;
+  weight.forEach((value) => {
+    sum += value;
+    partialSumArray.push(sum);
+  });
+  const r = Math.random() * sum;
+  for (let i = 0; i < partialSumArray.length; i++) {
+    if (partialSumArray[i] > r) {
+      return array[i];
+    }
+  }
 }

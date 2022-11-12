@@ -1,6 +1,6 @@
 import "./styles.css";
 import { LSystem } from "./lsystem";
-import { init } from "./control";
+import { init, lsystem } from "./control";
 import * as THREE from "three";
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls";
 
@@ -48,7 +48,7 @@ function animate() {
 }
 animate();
 
-const binaryTree = new LSystem(
+/* const binaryTree = new LSystem(
   {
     "0": "move 1",
     "1": "move 1",
@@ -56,42 +56,46 @@ const binaryTree = new LSystem(
     "]": "restoreState; turnRight 45",
   },
   {
-    "0": "1[0]0".split(""),
-    "1": "11".split(""),
+    "0": ["1[0]0".split(""), [1]],
+    "1": ["11".split(""), [1]],
   },
-  ["0"]
+  "0"
 );
 
 const fractalPlant = new LSystem(
   {
     X: "",
     F: "move 1",
-    S: "color 0x6B8E23; sphere",
+    S: "color 0x6B8E23;\n sphere",
     "[": "saveState",
     "]": "restoreState",
-    "+": "turnRight 25",
-    "-": "turnLeft 25",
+    "+": "turnRight 25; turnUp 5",
+    "-": "turnLeft 25; turnDown 5",
   },
   {
-    X: "F+[[X]-X]-F[-F[S]X]+X".split(""),
-    F: "FF".split(""),
-    S: [],
+    X: ["F+[[X]-X]-F[-F[S]X]+X".split(""), [1]],
+    F: ["FF".split(""), [1]],
+    S: [[], [1]],
   },
-  ["X"],
+  "X",
   6
-);
+); */
 
-function update(lsystem: LSystem) {
-  lsystem.grow();
-  lsystem.render();
-  // lsystem.log();
+function update(_lsystem: LSystem) {
+  if (_lsystem.grow()) {
+    _lsystem.render();
+  }
+  lsystem.log();
 }
 
 window.addEventListener("keyup", (e) => {
   switch (e.key) {
+    case "l":
+      console.log(lsystem);
+      break;
     case " ":
-      if (!controlIsOn) {
-        update(fractalPlant);
+      if (!controlIsOn && lsystem != undefined) {
+        update(lsystem);
       }
       break;
     case "Escape":

@@ -9,6 +9,15 @@ export { Turtle };
  * width property
  */
 
+/**
+ * TODO Reuse geometries and materials.
+ * instancedMesh
+ */
+
+/**
+ * TODO 최적화 후 gh-pages push
+ */
+
 class Turtle extends THREE.Object3D {
   private states: [THREE.Vector3, THREE.Euler, THREE.Color][];
   private _group: THREE.Group;
@@ -31,7 +40,7 @@ class Turtle extends THREE.Object3D {
   public reset() {
     this._group.clear();
     this.position.set(0, 0, 0);
-    this.rotation.set(0, 0, 0);
+    this.rotation.set(0, Math.PI / 2, Math.PI / 2);
   }
 
   /**
@@ -110,8 +119,16 @@ class Turtle extends THREE.Object3D {
    * @param widthSegments number of horizontal segments. Minimum value is 3.
    * @param heightSegments number of vertical segments. Minimum value is 2.
    */
-  public sphere(radius: number = 1, widthSegments: number = 6, heightSegments: number = 4) {
-    const geometry = new THREE.SphereGeometry(radius, widthSegments, heightSegments);
+  public sphere(
+    radius: number = 1,
+    widthSegments: number = 6,
+    heightSegments: number = 4
+  ) {
+    const geometry = new THREE.SphereGeometry(
+      radius,
+      widthSegments,
+      heightSegments
+    );
     const material = new THREE.MeshBasicMaterial({ color: this._color });
     const sphere = new THREE.Mesh(geometry, material);
     sphere.position.set(...this.position.toArray());

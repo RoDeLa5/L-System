@@ -1,9 +1,17 @@
-export { init };
+import { LSystem, DrawingRule, ProdRule } from "./lsystem";
 
-let drawingRule: { [key: string]: string };
-let prodRule: { [key: string]: [string[], number[]] };
+export { init, lsystem };
+
+let axiom: string;
+let drawingRule: DrawingRule;
+let prodRule: ProdRule;
 let symbols: string[] = [];
 
+let lsystem: LSystem;
+
+const axiomInputElm = document.getElementById(
+  "axiom-input"
+) as HTMLInputElement;
 const symbolListElm = document.getElementById(
   "symbol-list"
 ) as HTMLUListElement;
@@ -17,57 +25,90 @@ const symbolItemElm = document.querySelector(
 const prodRuleItemElm = document.querySelector("#template > .prod-rule-item")!;
 
 function init() {
-  document.getElementById("new-symbol-btn").addEventListener("click", () => {
-    const _symbol = newSymbolInput.value;
-    if (_symbol.length != 1) {
-      return;
+  newSymbolInput.addEventListener("keydown", (e) => {
+    if (e.key == "Enter") {
+      addSymbol();
     }
-    if (
-      !Array.from(symbolListElm.children).every((symbolElm) => {
-        return (
-          (symbolElm.querySelector(".symbol-name") as HTMLInputElement).value !=
-          _symbol
-        );
-      })
-    ) {
-      return;
-    }
-
-    symbols.push(_symbol);
-
-    const elm = symbolItemElm.cloneNode(true) as HTMLLIElement;
-    elm
-      .querySelector("div > .add-prod-rule-btn")
-      .addEventListener("click", function () {
-        this.previousElementSibling.appendChild(
-          prodRuleItemElm.cloneNode(true)
-        );
-      });
-    (elm.querySelector("div > .symbol-name") as HTMLInputElement).value =
-      _symbol;
-    symbolListElm.appendChild(elm);
   });
+  document
+    .getElementById("new-symbol-btn")
+    .addEventListener("click", addSymbol);
 
-  document.getElementById("save-btn").addEventListener("click", () => {
-    symbols = [];
-    drawingRule = {};
-    prodRule = {};
+  document.getElementById("save-btn").addEventListener("click", save);
 
-    Array.from(symbolListElm.children).forEach((symbolElm) => {
-      const _symbol = (
-        symbolElm.querySelector(".symbol-name") as HTMLInputElement
-      ).value;
-      drawingRule[_symbol] = (
-        symbolElm.querySelector(
-          "div:nth-child(2) > textarea"
-        ) as HTMLTextAreaElement
-      ).value;
+  document.getElementById("copy-btn").addEventListener("click", () => {
+    navigator.clipboard.writeText(
+      JSON.stringify({
+        symbols: symbols,
+        drawingRule: drawingRule,
+        prodRule: prodRule,
+      })
+    );
+  });
+}
 
+function addSymbol() {
+  const _symbol = newSymbolInput.value;
+  if (_symbol.length != 1) {
+    return;
+  }
+  if (
+    !Array.from(symbolListElm.children).every((symbolElm) => {
+      return (
+        (symbolElm.querySelector(".symbol-name") as HTMLInputElement).value !=
+        _symbol
+      );
+    })
+  ) {
+    return;
+  }
+
+  symbols.push(_symbol);
+
+  const elm = symbolItemElm.cloneNode(true) as HTMLLIElement;
+  elm
+    .querySelector("div > .add-prod-rule-btn")
+    .addEventListener("click", function () {
+      this.previousElementSibling.appendChild(prodRuleItemElm.cloneNode(true));
+    });
+  (elm.querySelector("div > .symbol-name") as HTMLInputElement).value = _symbol;
+  symbolListElm.appendChild(elm);
+}
+
+function save() {
+  // Reset variables
+  symbols = [];
+  drawingRule = {};
+  prodRule = {};
+
+  // Set axiom
+  axiom = axiomInputElm.value;
+  if (axiom == "") {
+    lsystem = undefined;
+    return;
+  }
+
+  // Set drawing rule
+  Array.from(symbolListElm.children).forEach((symbolElm) => {
+    const _symbol = (
+      symbolElm.querySelector(".symbol-name") as HTMLInputElement
+    ).value;
+    drawingRule[_symbol] = (
+      symbolElm.querySelector(
+        "div:nth-child(2) > textarea"
+      ) as HTMLTextAreaElement
+    ).value;
+
+    // Set production rule
+    // Get LI elements of production rule
+    const prodRuleList = Array.from(
+      (symbolElm.querySelector("div:nth-child(2) > ul") as HTMLUListElement)
+        .children
+    );
+    // Check if the list is empty and add to prodRule
+    if (prodRuleList.length) {
       prodRule[_symbol] = [[], []];
-      Array.from(
-        (symbolElm.querySelector("div:nth-child(2) > ul") as HTMLUListElement)
-          .children
-      ).forEach((prodElm) => {
+      prodRuleList.forEach((prodElm) => {
         const prodTxt = (
           prodElm.querySelector("input:nth-child(1)") as HTMLInputElement
         ).value;
@@ -84,23 +125,7 @@ function init() {
         prodRule[_symbol][0].push(prodTxt);
         prodRule[_symbol][1].push(parseInt(prodWeight));
       });
-      prodRule[_symbol];
-    });
-
-    /* 
-    console.log(symbols);
-    console.table(drawingRule);
-    console.table(prodRule);
-    */
-  });
-
-  document.getElementById("copy-btn").addEventListener("click", () => {
-    navigator.clipboard.writeText(
-      JSON.stringify({
-        symbols: symbols,
-        drawingRule: drawingRule,
-        prodRule: prodRule,
-      })
-    );
+    }
+    lsystem = new LSystem(drawingRule, prodRule, axiom);
   });
 }
