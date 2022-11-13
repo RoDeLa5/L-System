@@ -11,7 +11,7 @@ const config = {
     devtool: 'inline-source-map',
     output: {
         path: path.resolve(__dirname, 'dist'),
-        filename: '[name].[contenthash].js',
+        filename: '[name].js',
     },
     devServer: {
         open: true,
