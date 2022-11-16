@@ -93,6 +93,9 @@ window.addEventListener("keyup", (e) => {
     case "l":
       console.log(lsystem);
       break;
+    case "g":
+      gridHelper.visible = !gridHelper.visible;
+      break;
     case " ":
       if (!controlIsOn && lsystem != undefined) {
         update(lsystem);
