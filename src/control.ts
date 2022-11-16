@@ -136,6 +136,8 @@ function save() {
         prodRule[_symbol][1].push(parseInt(prodWeight));
       });
     }
+
+    lsystem?.turtle.reset();
     lsystem = new LSystem(drawingRule, prodRule, axiom, maxAge);
   });
 }

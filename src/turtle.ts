@@ -3,25 +3,17 @@ import { scene } from "./index";
 
 export { Turtle };
 
-/**
- * TODO Add lineType method
- * line types: line, box, cylinder
- * width property
- */
-
-/**
- * TODO Reuse geometries and materials.
- * instancedMesh
- */
-
-/**
- * TODO 최적화 후 gh-pages push
- */
-
 class Turtle extends THREE.Object3D {
   private states: [THREE.Vector3, THREE.Euler, THREE.Color][];
   private _group: THREE.Group;
   private _color: THREE.Color;
+
+  public useInstancedMesh: boolean;
+  public meshCount: { [type: string]: number };
+
+  private geometries: { [type: string]: THREE.BufferGeometry };
+  private materials: { [type: string]: THREE.Material };
+  private meshes: { [type: string]: THREE.InstancedMesh };
 
   constructor() {
     super();
@@ -29,6 +21,7 @@ class Turtle extends THREE.Object3D {
     this._group = new THREE.Group();
     scene.add(this._group);
     this._color = new THREE.Color(0xffffff);
+    this.useInstancedMesh = false;
   }
 
   private _drawLine(points: THREE.Vector3[]) {
@@ -41,6 +34,34 @@ class Turtle extends THREE.Object3D {
     this._group.clear();
     this.position.set(0, 0, 0);
     this.rotation.set(0, Math.PI / 2, Math.PI / 2);
+    if (this.useInstancedMesh) {
+      if (this.geometries == undefined) {
+        this.geometries = {};
+        this.geometries.line = new THREE.BufferGeometry();
+        this.geometries.sphere = new THREE.SphereGeometry();
+      }
+      if (this.materials == undefined) {
+        this.materials = {};
+        this.materials.line = new THREE.LineBasicMaterial();
+        this.materials.sphere = new THREE.MeshBasicMaterial();
+      }
+      if (this.meshes != undefined) {
+        Object.values(this.meshes).forEach((mesh) => {
+          mesh.dispose();
+        });
+      }
+      this.meshes.line = new THREE.InstancedMesh(
+        this.geometries.line,
+        this.materials.line,
+        this.meshCount.line
+      );
+      this.meshes.sphere = new THREE.InstancedMesh(
+        this.geometries.sphere,
+        this.materials.sphere,
+        this.meshCount.sphere
+      );
+      this._group.add(this.meshes.line, this.meshes.sphere);
+    }
   }
 
   /**
