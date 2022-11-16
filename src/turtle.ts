@@ -135,6 +135,14 @@ class Turtle extends THREE.Object3D {
   }
 
   /**
+   * Rotate turtle around the looking direction
+   * @param angle Angle to rotate in degrees
+   */
+  public rotate(angle: number) {
+    this.rotateX(deg2rad(angle));
+  }
+
+  /**
    * Create a sphere.
    * @param radius sphere radius.
    * @param widthSegments number of horizontal segments. Minimum value is 3.
